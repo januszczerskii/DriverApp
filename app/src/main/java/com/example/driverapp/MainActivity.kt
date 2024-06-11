@@ -53,10 +53,10 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private var fileDescriptor: ParcelFileDescriptor? = null
     private val mediaRetriever = MediaMetadataRetriever()
     private var module: Module? = null
-    private var feedbackType: Boolean = false // 0 meaning visual, 1 meaning text
-    private var sourceType: Boolean = false // 0 meaning video, 1 meaning camera
+    private var feedbackType: Boolean = false // 0 meaning visual, 1 meaning text  // PO CO?
+    private var sourceType: Boolean = false // 0 meaning video, 1 meaning camera  // PO CO?
     private var isVideoPlaying: Boolean = false
-    private var modelList: List<List<String>> = listOf(
+    private var modelList: List<List<String>> = listOf(  // PO CO?
         listOf("classesSigns.txt", "modelSigns.torchscript.ptl"),
         listOf("classesLanes.txt", "modelLanes.torchscript.ptl"),
         listOf("classesPCA.txt", "modelPCA.torchscript.ptl")
@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // TODO
         // Setup video picker
         photoPickerLauncher =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
             cameraHelper.startCamera(this)
         }
 
-        // Choose model
+        // Choose model // TODO
         val models = arrayOf("Signs", "Lanes", "People, cars and animals", "Same as before")
         val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
         builder.setTitle("What do you want to detect?")
@@ -179,11 +180,11 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         cameraExecutor.shutdown()
     }
 
-    private fun getPredictions(image: Bitmap): ArrayList<Result>? {
+    private fun getPredictions(image: Bitmap): ArrayList<Result>? { // TODO
         val resizedBitmap = Bitmap.createScaledBitmap(
             image,
             PrePostProcessor.mInputWidth,
-            PrePostProcessor.mInputHeight,
+            PrePostProcessor.mInputHeight ht,
             true
         )
         val inputTensor = TensorImageUtils.bitmapToFloat32Tensor(
@@ -207,7 +208,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         return results
     }
 
-    private fun yieldFrameFromVideo(): Bitmap? {
+    private fun yieldFrameFromVideo(): Bitmap? { // TODO
         val image = try {
             mediaRetriever.getFrameAtIndex(videoFrame)
         } catch (e: IllegalArgumentException) {
@@ -226,7 +227,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     }
 
     // Function to toggle drawer (open/close)
-    private fun toggleDrawer() {
+    private fun toggleDrawer() { // TODO
         if (drawerLayout.isDrawerOpen(findViewById(R.id.drawer))) {
             drawerLayout.closeDrawer(findViewById(R.id.drawer))
         } else {
@@ -235,7 +236,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     }
 
     // Function to toggle sound state and update button icon
-    private fun toggleSound() {
+    private fun toggleSound() { // TODO
         isSoundOn = !isSoundOn //
 
         // Change button icon
@@ -252,11 +253,11 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     fun streamFeedback(lifecycleOwner: LifecycleOwner) {
         GlobalScope.launch(Dispatchers.Main) {
             while (true) {
-                if (!isVideoPlaying) {
+                if (!isVideoPlaying) {  // TODO
                     break
                 }
 
-                var detNum = 0
+                var detNum = 0  // TODO
                 val startTime = System.currentTimeMillis()
                 var image: Bitmap? = null
 
@@ -282,7 +283,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                     if (results != null) {
                         detNum = results.size
                     }
-                    if (feedbackType) {
+                    if (feedbackType) { // TODO
                         val resultMessage = StringBuilder()
                         if (results != null) {
                             for (result in results) {
@@ -302,8 +303,8 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                     break
                 }
 
-                val perfTime = (System.currentTimeMillis() - startTime) / 1000.0
-                val perfMessage =
+                val perfTime = (System.currentTimeMillis() - startTime) / 1000.0 // TODO
+                val perfMessage = // TODO
                     "FPS : " + "%.2f".format(1 / perfTime) + "\nTime per frame : " + "%.2f".format(
                         perfTime
                     ) + "s\nDetections : " + detNum
@@ -311,7 +312,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
             // No need to close fileDescriptor since we're not using video
 
-            isVideoPlaying = false
+            isVideoPlaying = false  // TODO
         }
     }
 

@@ -49,21 +49,8 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var expandButton: ImageButton
     private lateinit var collapsesButton: ImageButton
-    private lateinit var photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>
-    private var fileDescriptor: ParcelFileDescriptor? = null
-    private val mediaRetriever = MediaMetadataRetriever()
     private var module: Module? = null
-    private var feedbackType: Boolean = false // 0 meaning visual, 1 meaning text  // PO CO?
-    private var sourceType: Boolean = false // 0 meaning video, 1 meaning camera  // PO CO?
-    private var isVideoPlaying: Boolean = false
-    private var modelList: List<List<String>> = listOf(  // PO CO?
-        listOf("classesSigns.txt", "modelSigns.torchscript.ptl"),
-        listOf("classesLanes.txt", "modelLanes.torchscript.ptl"),
-        listOf("classesPCA.txt", "modelPCA.torchscript.ptl")
-    )
-    private var modelChoice: Int = 0 // 0 for signs, 1 for lanes
-    private var videoFrame: Int = 0
-    private val skipFrames: Int = 1
+    private var model: List<String> = listOf("classesSigns.txt", "modelSigns.torchscript.ptl")
     private val cameraHelper = CameraHelper(this)
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var imageCapture: ImageCapture
@@ -87,17 +74,6 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // TODO
-        // Setup video picker
-        photoPickerLauncher =
-            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) {
-                    fileDescriptor = contentResolver.openFileDescriptor(uri, "r")
-                    mediaRetriever.setDataSource(fileDescriptor?.fileDescriptor)
-                    streamFeedback(this)
-                }
-            }
-
         // Check camera permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
@@ -113,29 +89,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
             startCameraSetup()
             cameraHelper.startCamera(this)
         }
-
-        // Choose model // TODO
-        val models = arrayOf("Signs", "Lanes", "People, cars and animals", "Same as before")
-        val builder = AlertDialog.Builder(this, R.style.AlertDialogCustom)
-        builder.setTitle("What do you want to detect?")
-        builder.setItems(models) { dialog, which ->
-            modelChoice = which
-
-            val prefs = getSharedPreferences("driverAppPrefs", MODE_PRIVATE)
-            if (modelChoice == modelList.size) {
-                modelChoice = prefs.getInt("modelChoiceKey", 0) // 0 is the default value
-            }
-            val editor = prefs.edit()
-            editor.putInt("modelChoiceKey", modelChoice)
-            editor.apply()
-
-            PrePostProcessor.mClasses =
-                FileLoader.loadClasses(applicationContext, modelList[modelChoice][0]).toTypedArray()
-            module = FileLoader.loadModel(applicationContext, modelList[modelChoice][1])
-        }
-        builder.show()
-
-
+        streamFeedback(this)
     }
 
     override fun onRequestPermissionsResult(
@@ -180,11 +134,11 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         cameraExecutor.shutdown()
     }
 
-    private fun getPredictions(image: Bitmap): ArrayList<Result>? { // TODO
+    private fun getPredictions(image: Bitmap): ArrayList<Result>? {
         val resizedBitmap = Bitmap.createScaledBitmap(
             image,
             PrePostProcessor.mInputWidth,
-            PrePostProcessor.mInputHeight ht,
+            PrePostProcessor.mInputHeight,
             true
         )
         val inputTensor = TensorImageUtils.bitmapToFloat32Tensor(
@@ -208,16 +162,6 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         return results
     }
 
-    private fun yieldFrameFromVideo(): Bitmap? { // TODO
-        val image = try {
-            mediaRetriever.getFrameAtIndex(videoFrame)
-        } catch (e: IllegalArgumentException) {
-            null
-        }
-        videoFrame += 1 * skipFrames
-        return image
-    }
-
     private suspend fun captureImage(cameraHelper: CameraHelper): Bitmap? {
         return suspendCancellableCoroutine { continuation ->
             cameraHelper.takePhotoAsBitmap { bitmap ->
@@ -227,7 +171,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     }
 
     // Function to toggle drawer (open/close)
-    private fun toggleDrawer() { // TODO
+    private fun toggleDrawer() { // TODO Not used
         if (drawerLayout.isDrawerOpen(findViewById(R.id.drawer))) {
             drawerLayout.closeDrawer(findViewById(R.id.drawer))
         } else {
@@ -236,7 +180,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     }
 
     // Function to toggle sound state and update button icon
-    private fun toggleSound() { // TODO
+    private fun toggleSound() { // TODO Not used
         isSoundOn = !isSoundOn //
 
         // Change button icon
@@ -253,12 +197,6 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     fun streamFeedback(lifecycleOwner: LifecycleOwner) {
         GlobalScope.launch(Dispatchers.Main) {
             while (true) {
-                if (!isVideoPlaying) {  // TODO
-                    break
-                }
-
-                var detNum = 0  // TODO
-                val startTime = System.currentTimeMillis()
                 var image: Bitmap? = null
 
                 // Capture image from the camera
@@ -281,38 +219,14 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
                     val results = getPredictions(imgAfterConv)
                     if (results != null) {
-                        detNum = results.size
-                    }
-                    if (feedbackType) { // TODO
-                        val resultMessage = StringBuilder()
-                        if (results != null) {
-                            for (result in results) {
-                                val stringToAppend =
-                                    PrePostProcessor.mClasses[result.classIndex] + " " + result.score + "\n"
-                                resultMessage.append(stringToAppend)
-                            }
-                        }
-
-                    } else {
-                        val drawOnImg = Canvas(imgAfterConv)
-                        if (results != null) {
-                            PaintResults.draw(drawOnImg, results)
+                        for (result in results) {
+                            PrePostProcessor.mClasses[result.classIndex] + " " + result.score + "\n"
                         }
                     }
                 } else {
                     break
                 }
-
-                val perfTime = (System.currentTimeMillis() - startTime) / 1000.0 // TODO
-                val perfMessage = // TODO
-                    "FPS : " + "%.2f".format(1 / perfTime) + "\nTime per frame : " + "%.2f".format(
-                        perfTime
-                    ) + "s\nDetections : " + detNum
             }
-
-            // No need to close fileDescriptor since we're not using video
-
-            isVideoPlaying = false  // TODO
         }
     }
 

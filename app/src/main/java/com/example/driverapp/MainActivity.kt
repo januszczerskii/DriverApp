@@ -14,7 +14,9 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -48,14 +50,16 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var expandButton: ImageButton
-    private lateinit var collapsesButton: ImageButton
+    private lateinit var collapseButton: Button
+    private lateinit var soundButton: ImageButton
+    private lateinit var tmpFdbckText: TextView
     private var module: Module? = null
     private var model: List<String> = listOf("classesSigns.txt", "modelSigns.torchscript.ptl")
     private val cameraHelper = CameraHelper(this)
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var imageCapture: ImageCapture
     private lateinit var cameraExecutor: ExecutorService
-    private var isSoundOn = true
+    private var isSoundOn = false
 
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 100 // You can choose any integer value
@@ -73,10 +77,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //initialize buttons
-        drawerLayout = findViewById(R.id.drawer_layout)
-        expandButton = findViewById(R.id.expand_button)
-        collapsesButton = findViewById(R.id.collapses_button)
+
         // Check camera permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
@@ -93,13 +94,20 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
             cameraHelper.startCamera(this)
         }
 
-        // access buttons
-        expandButton.setOnClickListener {
-            toggleDrawer()
-        }
-        collapsesButton.setOnClickListener {
-            toggleSound()
-        }
+        //initialize buttons
+        drawerLayout = findViewById(R.id.drawer_layout)
+        expandButton = findViewById(R.id.expand_button)
+        collapseButton = findViewById(R.id.collapse_button)
+        soundButton = findViewById(R.id.sound_button)
+
+        expandButton.setOnClickListener{toggleDrawer()}
+        collapseButton.setOnClickListener{toggleDrawer()}
+        soundButton.setOnClickListener{toggleSound()}
+
+        tmpFdbckText = findViewById(R.id.tmpFdbck)
+        val message: String = "Message"
+        tmpFdbckText.text = message
+
         streamFeedback(this)
 
     }
@@ -201,7 +209,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         } else {
             R.drawable.sound_off
         }
-        collapsesButton.setImageResource(iconResource)
+        soundButton.setImageResource(iconResource)
 
     }
 
@@ -230,10 +238,14 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                     val imgAfterConv = image.copy(image.config, true)
 
                     val results = getPredictions(imgAfterConv)
+                    val resultMessage = StringBuilder()
                     if (results != null) {
                         for (result in results) {
-                            PrePostProcessor.mClasses[result.classIndex] + " " + result.score + "\n"
+                            val stringToAppend =
+                                PrePostProcessor.mClasses[result.classIndex] + " " + result.score + "\n"
+                            resultMessage.append(stringToAppend)
                         }
+                        async { tmpFdbckText.text = resultMessage }.await()
                     }
                 } else {
                     break

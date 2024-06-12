@@ -73,7 +73,10 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        //initialize buttons
+        drawerLayout = findViewById(R.id.drawer_layout)
+        expandButton = findViewById(R.id.expand_button)
+        collapsesButton = findViewById(R.id.collapses_button)
         // Check camera permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
@@ -89,7 +92,16 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
             startCameraSetup()
             cameraHelper.startCamera(this)
         }
+
+        // access buttons
+        expandButton.setOnClickListener {
+            toggleDrawer()
+        }
+        collapsesButton.setOnClickListener {
+            toggleSound()
+        }
         streamFeedback(this)
+
     }
 
     override fun onRequestPermissionsResult(
@@ -171,7 +183,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     }
 
     // Function to toggle drawer (open/close)
-    private fun toggleDrawer() { // TODO Not used
+    private fun toggleDrawer() {
         if (drawerLayout.isDrawerOpen(findViewById(R.id.drawer))) {
             drawerLayout.closeDrawer(findViewById(R.id.drawer))
         } else {
@@ -180,7 +192,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     }
 
     // Function to toggle sound state and update button icon
-    private fun toggleSound() { // TODO Not used
+    private fun toggleSound() {
         isSoundOn = !isSoundOn //
 
         // Change button icon

@@ -14,7 +14,7 @@ object PrePostProcessor {
 
     private const val mOutputRow = 25200 // as decided by the YOLOv5 model for input image of size 640x640
     private var mOutputColumn = 6 // left, top, right, bottom, score and 80 class probability
-    private const val mThreshold = 0.60f // score above which a detection is generated, change that to arg in setThreshold function later
+    private const val mThreshold = 0.05f // score above which a detection is generated, change that to arg in setThreshold function later
     private const val mNmsLimit = 15
     lateinit var mClasses: Array<String>
     // The two methods nonMaxSuppression and IOU below are ported from https://github.com/hollance/YOLO-CoreML-MPSNNGraph/blob/master/Common/Helpers.swift
@@ -85,8 +85,7 @@ object PrePostProcessor {
         imgSizeY: Float
     ): ArrayList<Result> {
         val results = ArrayList<Result>()
-        for (i in 0 until mOutputRow) {
-            if (outputs[i * mOutputColumn + 4] > mThreshold) {
+        for (i in 0 until mOutputRow) {            if (outputs[i * mOutputColumn + 4] > mThreshold) {
                 val x = outputs[i * mOutputColumn]
                 val y = outputs[i * mOutputColumn + 1]
                 val w = outputs[i * mOutputColumn + 2]

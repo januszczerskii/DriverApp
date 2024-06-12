@@ -52,9 +52,10 @@
 
             <TextView
                 android:id="@+id/tmpFdbck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="257dp"
+                android:layout_height="48dp"
                 android:text="TextView"
+                android:textAlignment="center"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/expand_button"

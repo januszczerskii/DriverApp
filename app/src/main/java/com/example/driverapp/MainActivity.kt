@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import android.view.View
@@ -21,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -54,7 +56,8 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var soundButton: ImageButton
     private lateinit var tmpFdbckText: TextView
     private var module: Module? = null
-    private var model: List<String> = listOf("classesSigns.txt", "modelSigns.torchscript.ptl")
+    //private var model: List<String> = listOf("classes.txt", "model.torchscript.ptl")
+    private var model: List<String> = listOf("classes.txt", "model.torchscript.ptl")
     private val cameraHelper = CameraHelper(this)
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var imageCapture: ImageCapture
@@ -107,6 +110,10 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         tmpFdbckText = findViewById(R.id.tmpFdbck)
         val message: String = "Message"
         tmpFdbckText.text = message
+
+        PrePostProcessor.mClasses =
+            FileLoader.loadClasses(applicationContext, model[0]).toTypedArray()
+        module = FileLoader.loadModel(applicationContext, model[1])
 
         streamFeedback(this)
 
@@ -242,10 +249,12 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                     if (results != null) {
                         for (result in results) {
                             val stringToAppend =
-                                PrePostProcessor.mClasses[result.classIndex] + " " + result.score + "\n"
+                                PrePostProcessor.mClasses[result.classIndex] + " " + result.score + " " + result.classIndex.toString() + "\n"
                             resultMessage.append(stringToAppend)
                         }
-                        async { tmpFdbckText.text = resultMessage }.await()
+                        if (resultMessage.toString().compareTo("") != 0){
+                            async { tmpFdbckText.text = resultMessage }.await()
+                        }
                     }
                 } else {
                     break

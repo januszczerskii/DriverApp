@@ -1,36 +1,37 @@
 package com.example.driverapp
 
-import android.os.Bundle
-import androidx.drawerlayout.widget.DrawerLayout
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
+import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LifecycleOwner
-
 import com.example.driverapp.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import org.pytorch.IValue
+import org.pytorch.LitePyTorchAndroid.setNumThreads
 import org.pytorch.Module
 import org.pytorch.torchvision.TensorImageUtils
 import java.util.concurrent.ExecutorService
@@ -45,7 +46,6 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var collapseButton: Button
     private lateinit var locResButton: Button
     private lateinit var soundButton: ImageButton
-    private lateinit var tmpFdbckText: TextView
 
     private lateinit var velocityLabel: ImageView
     private lateinit var vehicleLabel: ImageView
@@ -160,8 +160,6 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                 RoadGuard.setCameraParams(sensorInfo.width, focalLength)
             }
         }
-
-
     }
 
     override fun onRequestPermissionsResult(
@@ -276,12 +274,13 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
     @OptIn(DelicateCoroutinesApi::class)
     fun streamFeedback(lifecycleOwner: LifecycleOwner) {
-        GlobalScope.launch(Dispatchers.Main) {
+        CoroutineScope(Dispatchers.Main).launch {
             while (true) {
                 var image: Bitmap? = null
 
                 // Capture image from the camera
-                image = captureImage(cameraHelper)
+                image = withContext(Dispatchers.IO) {return@withContext captureImage(cameraHelper) }
+
                 val matrix = Matrix().apply { postRotate(90F) }
                 if (image != null) {
                     image = Bitmap.createBitmap(
@@ -298,7 +297,8 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                 if (image != null) {
                     val imgAfterConv = image.copy(image.config, true)
 
-                    val results = getPredictions(imgAfterConv)
+//                    val results = getPredictions(imgAfterConv)
+                    val results = withContext(Dispatchers.IO) {return@withContext getPredictions(imgAfterConv) }
                     RoadGuard.resetVehicleAndPerson()
                     if (results != null) {
                         for (result in results) {
@@ -310,26 +310,26 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                         lanesLabel.setImageResource(R.drawable.lanes_dis)
                         driverLabel.setImageResource(R.drawable.driver_dis)
 
-                        if(RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked){
+                        if (RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked) {
                             val veloIconID = veloDict[RoadGuard.allowedSpeed]
                             if (veloIconID != null) {
                                 velocityLabel.setImageResource(veloIconID)
                             }
                         }
 
-                        if(RoadGuard.detectedVehicle && vehicleCheckbox.isChecked){
+                        if (RoadGuard.detectedVehicle && vehicleCheckbox.isChecked) {
                             vehicleLabel.setImageResource(R.drawable.vehicle_en)
                         }
 
-                        if(RoadGuard.detectedPerson && aPCheckbox.isChecked){
+                        if (RoadGuard.detectedPerson && aPCheckbox.isChecked) {
                             personLabel.setImageResource(R.drawable.person_en)
                         }
 
-                        if(RoadGuard.outOfLane && laneCheckbox.isChecked){
+                        if (RoadGuard.outOfLane && laneCheckbox.isChecked) {
                             lanesLabel.setImageResource(R.drawable.lanes_en)
                         }
 
-                        if(RoadGuard.driverStateAlert && driverCheckbox.isChecked){
+                        if (RoadGuard.driverStateAlert && driverCheckbox.isChecked) {
                             driverLabel.setImageResource(R.drawable.driver_en)
                         }
                     }

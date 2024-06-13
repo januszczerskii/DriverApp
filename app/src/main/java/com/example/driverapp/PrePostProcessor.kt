@@ -3,7 +3,7 @@ package com.example.driverapp
 import android.graphics.Rect
 import java.util.Arrays
 
-class Result(var classIndex: Int, var score: Float, var rect: Rect)
+class Result(var classIndex: Int, var score: Float, var rect: Rect, var width: Float)
 object PrePostProcessor {
     var noMeanRGB = floatArrayOf(0.0f, 0.0f, 0.0f)
     var noStdRGB = floatArrayOf(1.0f, 1.0f, 1.0f)
@@ -14,7 +14,7 @@ object PrePostProcessor {
 
     private const val mOutputRow = 25200 // as decided by the YOLOv5 model for input image of size 640x640
     private var mOutputColumn = 6 // left, top, right, bottom, score and 80 class probability
-    private const val mThreshold = 0.05f // score above which a detection is generated, change that to arg in setThreshold function later
+    private var mThreshold = 0.05f // score above which a detection is generated, change that to arg in setThreshold function later
     private const val mNmsLimit = 15
     lateinit var mClasses: Array<String>
     // The two methods nonMaxSuppression and IOU below are ported from https://github.com/hollance/YOLO-CoreML-MPSNNGraph/blob/master/Common/Helpers.swift
@@ -26,6 +26,10 @@ object PrePostProcessor {
      * - limit: the maximum number of boxes that will be selected
      * - threshold: used to decide whether boxes overlap too much
      */
+    fun change_accuracy(higher: Boolean){
+        mThreshold = if(higher) 0.9f else 0.05f
+    }
+
     private fun nonMaxSuppression(
         boxes: ArrayList<Result>
     ): ArrayList<Result> {
@@ -85,7 +89,8 @@ object PrePostProcessor {
         imgSizeY: Float
     ): ArrayList<Result> {
         val results = ArrayList<Result>()
-        for (i in 0 until mOutputRow) {            if (outputs[i * mOutputColumn + 4] > mThreshold) {
+        for (i in 0 until mOutputRow) {
+            if (outputs[i * mOutputColumn + 4] > mThreshold) {
                 val x = outputs[i * mOutputColumn]
                 val y = outputs[i * mOutputColumn + 1]
                 val w = outputs[i * mOutputColumn + 2]
@@ -103,7 +108,7 @@ object PrePostProcessor {
                     }
                 }
                 val rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-                val result = Result(cls, outputs[i * mOutputColumn + 4], rect)
+                val result = Result(cls, outputs[i * mOutputColumn + 4], rect, w / mInputWidth)
                 results.add(result)
             }
         }

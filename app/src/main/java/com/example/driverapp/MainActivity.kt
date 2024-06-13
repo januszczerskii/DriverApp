@@ -3,34 +3,24 @@ package com.example.driverapp
 import android.os.Bundle
 import androidx.drawerlayout.widget.DrawerLayout
 import android.Manifest
-import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Matrix
-import android.media.MediaMetadataRetriever
-import android.os.Build
-import android.os.ParcelFileDescriptor
-import android.util.Log
-import android.view.View
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.camera.core.ImageCapture
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleOwner
 
 import com.example.driverapp.databinding.ActivityMainBinding
@@ -53,17 +43,41 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var expandButton: ImageButton
     private lateinit var collapseButton: Button
+    private lateinit var locResButton: Button
     private lateinit var soundButton: ImageButton
     private lateinit var tmpFdbckText: TextView
+
+    private lateinit var velocityLabel: ImageView
+    private lateinit var vehicleLabel: ImageView
+    private lateinit var personLabel: ImageView
+    private lateinit var lanesLabel: ImageView
+    private lateinit var driverLabel: ImageView
+
+    private lateinit var accuracyCheckbox : CheckBox
+    private lateinit var pushCheckbox : CheckBox
+    private lateinit var velocityCheckbox : CheckBox
+    private lateinit var vehicleCheckbox : CheckBox
+    private lateinit var aPCheckbox : CheckBox
+    private lateinit var laneCheckbox : CheckBox
+    private lateinit var driverCheckbox : CheckBox
+    private lateinit var flickerCheckbox : CheckBox
+
     private var module: Module? = null
     //private var model: List<String> = listOf("classes.txt", "model.torchscript.ptl")
     private var model: List<String> = listOf("classes.txt", "model.torchscript.ptl")
+    private var veloDict = mapOf(10 to R.drawable.limit10, 20 to R.drawable.limit20,
+                                30 to R.drawable.limit30, 40 to R.drawable.limit40,
+                                50 to R.drawable.limit50, 60 to R.drawable.limit60,
+                                70 to R.drawable.limit70, 80 to R.drawable.limit80,
+                                90 to R.drawable.limit90, 100 to R.drawable.limit100,
+                                110 to R.drawable.limit110, 120 to R.drawable.limit120,
+                                140 to R.drawable.limit140)
     private val cameraHelper = CameraHelper(this)
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var imageCapture: ImageCapture
     private lateinit var cameraExecutor: ExecutorService
     private var isSoundOn = false
-
+    private var allowedSpeed = 50
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 100 // You can choose any integer value
     }
@@ -102,20 +116,51 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         expandButton = findViewById(R.id.expand_button)
         collapseButton = findViewById(R.id.collapse_button)
         soundButton = findViewById(R.id.sound_button)
+        locResButton = findViewById(R.id.location_reset_button)
 
         expandButton.setOnClickListener{toggleDrawer()}
         collapseButton.setOnClickListener{toggleDrawer()}
         soundButton.setOnClickListener{toggleSound()}
+        locResButton.setOnClickListener{resetLocation()}
 
-        tmpFdbckText = findViewById(R.id.tmpFdbck)
-        val message: String = "Message"
-        tmpFdbckText.text = message
+        //initialize labels
+        velocityLabel = findViewById(R.id.velocity_icon)
+        vehicleLabel = findViewById(R.id.vehicle_icon)
+        personLabel = findViewById(R.id.person_icon)
+        lanesLabel = findViewById(R.id.lanes_icon)
+        driverLabel = findViewById(R.id.driver_icon)
+
+        //Initialize checkboxes
+        accuracyCheckbox = findViewById(R.id.accuracy_checkbox)
+        pushCheckbox = findViewById(R.id.push_notifications_checkbox)
+        velocityCheckbox = findViewById(R.id.velocity_control_checkbox)
+        vehicleCheckbox = findViewById(R.id.vehicle_control_checkbox)
+        aPCheckbox = findViewById(R.id.animal_person_detection_checkbox)
+        laneCheckbox = findViewById(R.id.lane_control_checkbox)
+        driverCheckbox = findViewById(R.id.driver_control_checkbox)
+        flickerCheckbox = findViewById(R.id.screen_flickering_checkbox)
+
+        accuracyCheckbox.setOnClickListener{changeAccuracy()}
 
         PrePostProcessor.mClasses =
             FileLoader.loadClasses(applicationContext, model[0]).toTypedArray()
         module = FileLoader.loadModel(applicationContext, model[1])
 
         streamFeedback(this)
+
+        val cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
+        val cameraIdList = cameraManager.cameraIdList
+        if (cameraIdList.isNotEmpty()){
+            val cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdList[0])
+            val sensorInfo = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+            val focalLength =
+                cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                    ?.firstOrNull()
+            if (sensorInfo != null && focalLength != null){
+                RoadGuard.setCameraParams(sensorInfo.width, focalLength)
+            }
+        }
+
 
     }
 
@@ -197,6 +242,10 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         }
     }
 
+    private fun changeAccuracy(){
+        PrePostProcessor.change_accuracy(accuracyCheckbox.isChecked)
+    }
+
     // Function to toggle drawer (open/close)
     private fun toggleDrawer() {
         if (drawerLayout.isDrawerOpen(findViewById(R.id.drawer))) {
@@ -218,6 +267,11 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         }
         soundButton.setImageResource(iconResource)
 
+    }
+
+    private fun resetLocation() {
+        RoadGuard.urbanArea = true
+        RoadGuard.allowedSpeed = 50
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -245,15 +299,38 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                     val imgAfterConv = image.copy(image.config, true)
 
                     val results = getPredictions(imgAfterConv)
-                    val resultMessage = StringBuilder()
+                    RoadGuard.resetVehicleAndPerson()
                     if (results != null) {
                         for (result in results) {
-                            val stringToAppend =
-                                PrePostProcessor.mClasses[result.classIndex] + " " + result.score + " " + result.classIndex.toString() + "\n"
-                            resultMessage.append(stringToAppend)
+                            RoadGuard.processOutput(result.classIndex, result.width)
                         }
-                        if (resultMessage.toString().compareTo("") != 0){
-                            async { tmpFdbckText.text = resultMessage }.await()
+
+                        vehicleLabel.setImageResource(R.drawable.vehicle_dis)
+                        personLabel.setImageResource(R.drawable.person_dis)
+                        lanesLabel.setImageResource(R.drawable.lanes_dis)
+                        driverLabel.setImageResource(R.drawable.driver_dis)
+
+                        if(RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked){
+                            val veloIconID = veloDict[RoadGuard.allowedSpeed]
+                            if (veloIconID != null) {
+                                velocityLabel.setImageResource(veloIconID)
+                            }
+                        }
+
+                        if(RoadGuard.detectedVehicle && vehicleCheckbox.isChecked){
+                            vehicleLabel.setImageResource(R.drawable.vehicle_en)
+                        }
+
+                        if(RoadGuard.detectedPerson && aPCheckbox.isChecked){
+                            personLabel.setImageResource(R.drawable.person_en)
+                        }
+
+                        if(RoadGuard.outOfLane && laneCheckbox.isChecked){
+                            lanesLabel.setImageResource(R.drawable.lanes_en)
+                        }
+
+                        if(RoadGuard.driverStateAlert && driverCheckbox.isChecked){
+                            driverLabel.setImageResource(R.drawable.driver_en)
                         }
                     }
                 } else {

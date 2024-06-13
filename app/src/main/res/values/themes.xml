@@ -8,5 +8,11 @@
             @color/white</item>
     </style>
 
+    <style name="Checkbox" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="textFillColor">
+            @color/black
+        </item>
+    </style>
+
     <style name="Theme.driverAppPrototype" parent="Base.Theme.driverAppPrototype" />
 </resources>

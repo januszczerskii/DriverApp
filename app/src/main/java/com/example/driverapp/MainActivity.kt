@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var vehicleLabel: ImageView
     private lateinit var personLabel: ImageView
     private lateinit var lanesLabel: ImageView
-    private lateinit var driverLabel: ImageView
+
 
     private lateinit var accuracyCheckbox : CheckBox
     private lateinit var pushCheckbox : CheckBox
@@ -124,11 +124,11 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         locResButton.setOnClickListener{resetLocation()}
 
         //initialize labels
-        velocityLabel = findViewById(R.id.velocity_icon)
+        //velocityLabel = findViewById(R.id.velocity_icon)
         vehicleLabel = findViewById(R.id.vehicle_icon)
         personLabel = findViewById(R.id.person_icon)
         lanesLabel = findViewById(R.id.lanes_icon)
-        driverLabel = findViewById(R.id.driver_icon)
+
 
         //Initialize checkboxes
         accuracyCheckbox = findViewById(R.id.accuracy_checkbox)
@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                         vehicleLabel.setImageResource(R.drawable.vehicle_dis)
                         personLabel.setImageResource(R.drawable.person_dis)
                         lanesLabel.setImageResource(R.drawable.lanes_dis)
-                        driverLabel.setImageResource(R.drawable.driver_dis)
+
 
                         if (RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked) {
                             val veloIconID = veloDict[RoadGuard.allowedSpeed]
@@ -329,9 +329,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                             lanesLabel.setImageResource(R.drawable.lanes_en)
                         }
 
-                        if (RoadGuard.driverStateAlert && driverCheckbox.isChecked) {
-                            driverLabel.setImageResource(R.drawable.driver_en)
-                        }
+
                     }
                 } else {
                     break

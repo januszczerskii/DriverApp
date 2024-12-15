@@ -13,12 +13,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.93" />
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent="0.93"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_blue_light"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -27,7 +38,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline">
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            android:background="@color/white">>
+
 
 
             <ImageButton
@@ -65,23 +78,60 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.571"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
-            <ImageView
-                android:id="@+id/velocity_icon"
-                android:layout_width="0dp"
+
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <View
+                android:layout_width="2dp"
                 android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/limit50"
-                app:layout_constraintBottom_toTopOf="@id/person_icon"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/guideline2"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:background="@android:color/holo_blue_light"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="@+id/guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/guideline22"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.2" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/holo_blue_light"
+                app:layout_constraintTop_toTopOf="@+id/guideline22" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline222"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.6" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/holo_blue_light"
+                app:layout_constraintTop_toTopOf="@+id/guideline222" />
+
+
+
 
             <ImageView
                 android:id="@+id/vehicle_icon"
@@ -89,12 +139,57 @@
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/vehicle_dis"
-                app:layout_constraintBottom_toTopOf="@id/lanes_icon"
+                app:layout_constraintBottom_toTopOf="@id/guideline222"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="@id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/logo_icon" />
+                app:layout_constraintTop_toTopOf="@id/guideline22"/>
 
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/guideline22">
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:backgroundTint="@android:color/holo_green_light"
+                    android:background="@drawable/circle_shape" />
+
+                <TextView
+                    android:id="@+id/logo_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:text="DriverApp"
+                    android:textSize="48sp"
+                    android:fontFamily="@font/montserratbold"
+                    android:textColor="@android:color/black"
+                    android:letterSpacing="0.05"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/logo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/logo_text"/>
+
+
+            </LinearLayout>
             <ImageView
                 android:id="@+id/lanes_icon"
                 android:layout_width="0dp"
@@ -105,7 +200,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="@id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/vehicle_icon" />
+                app:layout_constraintTop_toTopOf="@id/guideline222"/>
 
             <ImageView
                 android:id="@+id/person_icon"
@@ -113,47 +208,44 @@
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/person_dis"
-                app:layout_constraintBottom_toTopOf="@id/driver_icon"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/guideline2"
-                app:layout_constraintTop_toBottomOf="@id/velocity_icon" />
-
-            <ImageView
-                android:id="@+id/driver_icon"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/driver_dis"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/guideline2"
-                app:layout_constraintTop_toBottomOf="@id/person_icon" />
+                app:layout_constraintTop_toTopOf="@id/guideline222"/>
 
-            <ImageView
-                android:id="@+id/logo_icon"
+            <FrameLayout
+                android:id="@+id/frameLayout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:enabled="false"
-                android:scaleType="centerCrop"
-                android:src="@drawable/logo"
-                app:layout_constraintBottom_toTopOf="@id/vehicle_icon"
+                app:layout_constraintBottom_toTopOf="@id/guideline222"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="@id/guideline2"
-                app:layout_constraintEnd_toStartOf="@id/velocity_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/guideline22">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline2"
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/test"
+                    android:textAlignment="center" />
+
+            </FrameLayout>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
+                android:gravity="center"
+                android:text="100"
+                android:textColor="#000000"
+                android:textSize="80sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+                app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+                app:layout_constraintStart_toStartOf="@+id/frameLayout"
+                app:layout_constraintTop_toTopOf="@+id/frameLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

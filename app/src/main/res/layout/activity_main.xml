@@ -11,7 +11,9 @@
     <!-- Main content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#BDBDBD">
+
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -24,8 +26,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/holo_blue_light"
+            android:layout_height="4dp"
+            android:background="@android:color/black"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 
 
@@ -39,7 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline"
-            android:background="@color/white">>
+            >>
 
 
 
@@ -47,7 +49,7 @@
                 android:id="@+id/expand_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="#BDBDBD"
                 android:src="@drawable/settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -56,7 +58,7 @@
                 android:id="@+id/sound_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="#BDBDBD"
                 android:scaleType="centerCrop"
                 android:src="@drawable/sound_off"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -80,12 +82,10 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.571"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
-
-
 
 
             <androidx.constraintlayout.widget.Guideline
@@ -98,23 +98,23 @@
             <View
                 android:layout_width="2dp"
                 android:layout_height="0dp"
-                android:background="@android:color/holo_blue_light"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                android:background="@android:color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/guideline22"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/guideline22" />
 
             <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline22"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2" />
+                android:id="@+id/guideline22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@android:color/holo_blue_light"
+                android:background="@android:color/black"
                 app:layout_constraintTop_toTopOf="@+id/guideline22" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -127,10 +127,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@android:color/holo_blue_light"
+                android:background="@android:color/black"
                 app:layout_constraintTop_toTopOf="@+id/guideline222" />
-
-
 
 
             <ImageView
@@ -143,53 +141,57 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="@id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/guideline22"/>
+                app:layout_constraintTop_toTopOf="@id/guideline22" />
+
 
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center"
-                app:layout_constraintStart_toStartOf="parent"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/guideline22"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/guideline22">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:backgroundTint="@android:color/holo_green_light"
-                    android:background="@drawable/circle_shape" />
+                    android:layout_width="13dp"
+                    android:layout_height="14dp"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/circle_shape"
+                    android:backgroundTint="@android:color/holo_green_light" />
 
                 <TextView
                     android:id="@+id/logo_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="@font/montserratbold"
+                    android:letterSpacing="0.05"
                     android:scaleType="centerCrop"
                     android:text="DriverApp"
-                    android:textSize="48sp"
-                    android:fontFamily="@font/montserratbold"
                     android:textColor="@android:color/black"
-                    android:letterSpacing="0.05"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"
-                    />
+                    android:textSize="42sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="10dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/logo"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/logo_text"/>
+                    app:layout_constraintStart_toStartOf="@id/logo_text"
+                    app:layout_constraintTop_toTopOf="@id/logo_text" />
 
 
             </LinearLayout>
+
             <ImageView
                 android:id="@+id/lanes_icon"
                 android:layout_width="0dp"
@@ -200,7 +202,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="@id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/guideline222"/>
+                app:layout_constraintTop_toTopOf="@id/guideline222" />
 
             <ImageView
                 android:id="@+id/person_icon"
@@ -212,7 +214,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/guideline2"
-                app:layout_constraintTop_toTopOf="@id/guideline222"/>
+                app:layout_constraintTop_toTopOf="@id/guideline222" />
 
             <FrameLayout
                 android:id="@+id/frameLayout"

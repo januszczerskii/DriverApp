@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Outer Red Circle -->
+    <path
+        android:fillColor="#FF0000"
+        android:pathData="M50,5a45,45 0 1,1 0,90a45,45 0 1,1 0,-90z" />
+
+    <!-- Inner White Circle -->
+    <path
+        android:fillColor="#BDBDBD"
+        android:pathData="M50,10a40,40 0 1,1 0,80a40,40 0 1,1 0,-80z" />
+</vector>

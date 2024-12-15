@@ -25,13 +25,10 @@ import com.example.driverapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.pytorch.IValue
-import org.pytorch.LitePyTorchAndroid.setNumThreads
 import org.pytorch.Module
 import org.pytorch.torchvision.TensorImageUtils
 import java.util.concurrent.ExecutorService
@@ -326,7 +323,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                         }
 
                         if (RoadGuard.outOfLane && laneCheckbox.isChecked) {
-                            lanesLabel.setImageResource(R.drawable.lanes_en)
+                            lanesLabel.setImageResource(R.drawable.lanes_dis)
                         }
 
 

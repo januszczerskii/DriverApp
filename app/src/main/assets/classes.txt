@@ -1,0 +1,30 @@
+Person
+Single-track vehicle
+Car
+Bus
+Train
+Truck
+Traffic light
+Stop sign
+Animal
+Sports ball
+ogr20
+ogr30
+ogr40
+ogr50
+ogr60
+ogr70
+ogr80
+ogr90
+ogr100
+ogr110
+ogr120
+ogr140
+inneograniczenia
+terenzabudowany
+terenniezabudowany
+autostrada
+drogaszybkiegoruchu
+zmianapierwszenstwa
+koniecautostrada
+koniecdrogaszybkiegoruchu

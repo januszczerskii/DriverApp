@@ -1,26 +1,15 @@
-<!--<resources xmlns:tools="http://schemas.android.com/tools">-->
-<!--    &lt;!&ndash; Base application theme. &ndash;&gt;-->
-<!--    <style name="Base.Theme.driverAppPrototype" parent="Theme.Material3.DayNight.NoActionBar">-->
-<!--    </style>-->
-
-<!--    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">-->
-<!--        <item name="colorBackgroundFloating">-->
-<!--            @color/white</item>-->
-<!--    </style>-->
-
-<!--    <style name="Checkbox" parent="Theme.AppCompat.Light.Dialog.Alert">-->
-<!--        <item name="textFillColor">-->
-<!--            @color/black-->
-<!--        </item>-->
-<!--    </style>-->
-
-<!--    <style name="Theme.driverAppPrototype" parent="Base.Theme.driverAppPrototype" />-->
-<!--</resources>-->
-
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.driverApp" parent="Theme.Material3.DayNight.NoActionBar">
+
+    <!-- Główny motyw aplikacji -->
+   <!-- <style name="Base.Theme.driverApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="buttonStyle">@style/CustomButtonStyle</item> &lt;!&ndash; Ustawienie stylu przycisków &ndash;&gt;
+    </style>-->
+
+    <style name="Base.Theme.driverApp" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Default color for buttons -->
+        <item name="colorButtonNormal">@color/blue_light</item> <!-- Replace with your desired color -->
+
     </style>
 
-    <style name="Theme.driverApp" parent="Base.Theme.driverApp" />
+
 </resources>

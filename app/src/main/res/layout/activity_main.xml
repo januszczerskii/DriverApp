@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    >
 
     <!-- Main content -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -160,7 +161,7 @@
                     android:layout_height="14dp"
                     android:layout_marginStart="20dp"
                     android:background="@drawable/circle_shape"
-                    android:backgroundTint="@android:color/holo_green_light" />
+                    android:backgroundTint="@color/blue_light" />
 
                 <TextView
                     android:id="@+id/logo_text"
@@ -229,12 +230,13 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/test"
+                    android:src="@drawable/sign_background"
                     android:textAlignment="center" />
 
             </FrameLayout>
 
             <TextView
+                android:id="@+id/speedLimitTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -286,6 +288,8 @@
                 android:id="@+id/background_execution_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomButtonStyle"
+                android:backgroundTint="@null"
                 android:text="@string/background_execution"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/location_reset_button"
@@ -298,6 +302,7 @@
                 android:id="@+id/location_reset_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomButtonStyle"
                 android:text="@string/location_reset"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/accuracy_checkbox"
@@ -310,6 +315,7 @@
                 android:id="@+id/accuracy_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomCheckboxStyle"
                 android:checked="true"
                 android:text="@string/accuracy"
                 android:textColor="@color/black"
@@ -323,6 +329,7 @@
                 android:id="@+id/push_notifications_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomCheckboxStyle"
                 android:checked="true"
                 android:text="@string/push_notifications"
                 android:textColor="@color/black"
@@ -338,6 +345,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/velocity_control"
+                style="@style/CustomCheckboxStyle"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/vehicle_control_checkbox"
@@ -349,6 +357,7 @@
                 android:id="@+id/vehicle_control_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomCheckboxStyle"
                 android:checked="true"
                 android:text="@string/vehicle_control"
                 android:textColor="@color/black"
@@ -362,6 +371,7 @@
                 android:id="@+id/animal_person_detection_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomCheckboxStyle"
                 android:checked="true"
                 android:text="@string/animal_person_detection"
                 android:textColor="@color/black"
@@ -375,6 +385,7 @@
                 android:id="@+id/lane_control_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomCheckboxStyle"
                 android:checked="true"
                 android:text="@string/lane_control"
                 android:textColor="@color/black"
@@ -388,6 +399,7 @@
                 android:id="@+id/driver_control_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/CustomCheckboxStyle"
                 android:checked="true"
                 android:text="@string/driver_control"
                 android:textColor="@color/black"
@@ -400,6 +412,7 @@
             <CheckBox
                 android:id="@+id/screen_flickering_checkbox"
                 android:layout_width="match_parent"
+                style="@style/CustomCheckboxStyle"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/screen_flickering"
@@ -413,6 +426,7 @@
             <Button
                 android:id="@+id/collapse_button"
                 android:layout_width="match_parent"
+                style="@style/CustomButtonStyle"
                 android:layout_height="wrap_content"
                 android:text="Collapse"
                 android:textSize="16sp"

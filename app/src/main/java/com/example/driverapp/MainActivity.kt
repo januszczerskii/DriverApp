@@ -34,6 +34,7 @@ import org.pytorch.torchvision.TensorImageUtils
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
+import android.widget.TextView
 
 
 class MainActivity : AppCompatActivity() { // user choices and changing the main activity components
@@ -44,11 +45,10 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var locResButton: Button
     private lateinit var soundButton: ImageButton
 
-    private lateinit var velocityLabel: ImageView
     private lateinit var vehicleLabel: ImageView
     private lateinit var personLabel: ImageView
     private lateinit var lanesLabel: ImageView
-
+    private lateinit var speedLimitTextView: TextView
 
     private lateinit var accuracyCheckbox : CheckBox
     private lateinit var pushCheckbox : CheckBox
@@ -59,16 +59,11 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var driverCheckbox : CheckBox
     private lateinit var flickerCheckbox : CheckBox
 
+
     private var module: Module? = null
     //private var model: List<String> = listOf("classes.txt", "model.torchscript.ptl")
     private var model: List<String> = listOf("classes.txt", "model.torchscript.ptl")
-    private var veloDict = mapOf(10 to R.drawable.limit10, 20 to R.drawable.limit20,
-                                30 to R.drawable.limit30, 40 to R.drawable.limit40,
-                                50 to R.drawable.limit50, 60 to R.drawable.limit60,
-                                70 to R.drawable.limit70, 80 to R.drawable.limit80,
-                                90 to R.drawable.limit90, 100 to R.drawable.limit100,
-                                110 to R.drawable.limit110, 120 to R.drawable.limit120,
-                                140 to R.drawable.limit140)
+
     private val cameraHelper = CameraHelper(this)
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var imageCapture: ImageCapture
@@ -81,6 +76,8 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         // Set up the main view
         window.setFlags(
@@ -107,7 +104,8 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
             startCameraSetup()
             cameraHelper.startCamera(this)
         }
-
+        setContentView(R.layout.activity_main)
+        speedLimitTextView = findViewById(R.id.speedLimitTextView)
         //initialize buttons
         drawerLayout = findViewById(R.id.drawer_layout)
         expandButton = findViewById(R.id.expand_button)
@@ -158,6 +156,8 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
             }
         }
     }
+
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -307,12 +307,21 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                         lanesLabel.setImageResource(R.drawable.lanes_dis)
 
 
-                        if (RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked) {
+                       /* if (RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked) {
                             val veloIconID = veloDict[RoadGuard.allowedSpeed]
                             if (veloIconID != null) {
                                 velocityLabel.setImageResource(veloIconID)
                             }
+                        }*/
+
+                        if (RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked) {
+                            // Update the speed limit text dynamically
+                            speedLimitTextView.text = "${RoadGuard.allowedSpeed}"
+
+                            // Update the local allowedSpeed variable
+                            allowedSpeed = RoadGuard.allowedSpeed
                         }
+
 
                         if (RoadGuard.detectedVehicle && vehicleCheckbox.isChecked) {
                             vehicleLabel.setImageResource(R.drawable.vehicle_en)
@@ -322,9 +331,10 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                             personLabel.setImageResource(R.drawable.person_en)
                         }
 
-                        if (RoadGuard.outOfLane && laneCheckbox.isChecked) {
-                            lanesLabel.setImageResource(R.drawable.lanes_dis)
+                        if ((RoadGuard.outOfLane && laneCheckbox.isChecked())) {
+                            lanesLabel.setImageResource(R.drawable.lanes_en);
                         }
+
 
 
                     }

@@ -27,7 +27,7 @@ object RoadGuard {
         when (classNum) {
             // Person Detected
             0 -> {
-                if (calcDist(0.6, objW) < safeDist){
+                if (calcDist(0.45, objW) < safeDist){
                     detectedPerson = true
                 }
             }

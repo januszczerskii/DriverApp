@@ -1,6 +1,7 @@
 package com.example.driverapp
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -35,6 +36,10 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import android.widget.TextView
+import android.os.Vibrator
+import android.os.VibrationEffect
+import android.media.ToneGenerator
+import android.media.AudioManager
 
 
 class MainActivity : AppCompatActivity() { // user choices and changing the main activity components
@@ -70,6 +75,11 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
     private lateinit var cameraExecutor: ExecutorService
     private var isSoundOn = false
     private var allowedSpeed = 50
+
+    private lateinit var vibrator: Vibrator
+    private var vibrationAvailable = false
+    private lateinit var toneGen: ToneGenerator
+
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 100 // You can choose any integer value
     }
@@ -155,6 +165,12 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                 RoadGuard.setCameraParams(sensorInfo.width, focalLength)
             }
         }
+        vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            vibrationAvailable = true
+        }
+
+        toneGen = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
     }
 
 
@@ -262,6 +278,13 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
         }
         soundButton.setImageResource(iconResource)
 
+        if(vibrationAvailable){
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
+        if(isSoundOn){
+            toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 200)
+        }
+
     }
 
     private fun resetLocation() {
@@ -316,6 +339,12 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
                         if (RoadGuard.allowedSpeed != allowedSpeed && velocityCheckbox.isChecked) {
                             // Update the speed limit text dynamically
+                            if(vibrationAvailable){
+                                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            }
+                            if(isSoundOn){
+                                toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 200)
+                            }
                             speedLimitTextView.text = "${RoadGuard.allowedSpeed}"
 
                             // Update the local allowedSpeed variable
@@ -324,18 +353,34 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
 
 
                         if (RoadGuard.detectedVehicle && vehicleCheckbox.isChecked) {
+                            if(vibrationAvailable){
+                                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            }
+                            if(isSoundOn){
+                                toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 200)
+                            }
                             vehicleLabel.setImageResource(R.drawable.vehicle_en)
                         }
 
                         if (RoadGuard.detectedPerson && aPCheckbox.isChecked) {
+                            if(vibrationAvailable){
+                                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            }
+                            if(isSoundOn){
+                                toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 200)
+                            }
                             personLabel.setImageResource(R.drawable.person_en)
                         }
 
                         if ((RoadGuard.outOfLane && laneCheckbox.isChecked())) {
+                            if(vibrationAvailable){
+                                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                            }
+                            if(isSoundOn){
+                                toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 200)
+                            }
                             lanesLabel.setImageResource(R.drawable.lanes_en);
                         }
-
-
 
                     }
                 } else {

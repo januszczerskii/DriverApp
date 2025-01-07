@@ -3,7 +3,7 @@ package com.example.driverapp
 import android.graphics.Rect
 import java.util.Arrays
 
-class Result(var classIndex: Int, var score: Float, var rect: Rect, var width: Float)
+class Result(var classIndex: Int, var score: Float, var rect: Rect, var width: Float, var height: Float, var imgSizeX: Float, var imgSizeY: Float)
 object PrePostProcessor {
     var noMeanRGB = floatArrayOf(0.0f, 0.0f, 0.0f)
     var noStdRGB = floatArrayOf(1.0f, 1.0f, 1.0f)
@@ -108,7 +108,7 @@ object PrePostProcessor {
                     }
                 }
                 val rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-                val result = Result(cls, outputs[i * mOutputColumn + 4], rect, w / mInputWidth)
+                val result = Result(cls, outputs[i * mOutputColumn + 4], rect, w / mInputWidth, h / mInputHeight, imgSizeX, imgSizeY)
                 results.add(result)
             }
         }

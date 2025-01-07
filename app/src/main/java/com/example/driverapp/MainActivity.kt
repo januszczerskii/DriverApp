@@ -322,7 +322,7 @@ class MainActivity : AppCompatActivity() { // user choices and changing the main
                     RoadGuard.resetVehicleAndPerson()
                     if (results != null) {
                         for (result in results) {
-                            RoadGuard.processOutput(result.classIndex, result.width)
+                            RoadGuard.processOutput(result)
                         }
 
                         vehicleLabel.setImageResource(R.drawable.vehicle_dis)

@@ -18,11 +18,25 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+/**
+ * A helper class for managing camera operations, such as capturing images,
+ * binding camera use cases, and rotating images.
+ *
+ * @param context The context of the calling component.
+ */
 class CameraHelper(private val context: Context) {
 
+    // Executor for running background tasks
     private val executor: ExecutorService = Executors.newSingleThreadExecutor()
+
+    // ImageCapture use case for taking photos
     private var imageCapture: ImageCapture? = null
 
+    /**
+     * Starts the camera and binds the preview to the lifecycle of the provided owner.
+     *
+     * @param lifecycleOwner The lifecycle owner for the camera binding.
+     */
     fun startCamera(lifecycleOwner: LifecycleOwner) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
@@ -31,13 +45,21 @@ class CameraHelper(private val context: Context) {
         }, ContextCompat.getMainExecutor(context))
     }
 
+    /**
+     * Binds the camera use cases, such as image capture, to the lifecycle of the application.
+     *
+     * @param cameraProvider The ProcessCameraProvider instance.
+     * @param imageCapture The ImageCapture use case to bind.
+     */
     fun bindCameraUseCases(cameraProvider: ProcessCameraProvider, imageCapture: ImageCapture) {
         val cameraSelector = CameraSelector.Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
             .build()
 
+        // Unbind any existing use cases before binding new ones
         cameraProvider.unbindAll()
 
+        // Bind the lifecycle owner, camera selector, and use cases
         cameraProvider.bindToLifecycle(
             context as LifecycleOwner, // Assuming 'context' is a LifecycleOwner
             cameraSelector,
@@ -45,6 +67,13 @@ class CameraHelper(private val context: Context) {
         )
     }
 
+    /**
+     * Rotates a bitmap image by a specified angle.
+     *
+     * @param source The source bitmap to rotate.
+     * @param angle The angle in degrees to rotate the bitmap.
+     * @return A new rotated bitmap.
+     */
     fun rotateImage(source: Bitmap, angle: Float): Bitmap {
         val matrix = Matrix()
         matrix.postRotate(angle)
@@ -53,9 +82,15 @@ class CameraHelper(private val context: Context) {
             matrix, true
         )
     }
+
+    /**
+     * Binds the preview use case to the camera provider and lifecycle owner.
+     *
+     * @param cameraProvider The ProcessCameraProvider instance.
+     * @param lifecycleOwner The lifecycle owner for the camera binding.
+     */
     private fun bindPreview(cameraProvider: ProcessCameraProvider, lifecycleOwner: LifecycleOwner) {
-        imageCapture = ImageCapture.Builder()
-            .build()
+        imageCapture = ImageCapture.Builder().build()
 
         val cameraSelector = CameraSelector.Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -65,7 +100,10 @@ class CameraHelper(private val context: Context) {
             .addUseCase(imageCapture!!)
             .build()
 
+        // Unbind any existing use cases before binding new ones
         cameraProvider.unbindAll()
+
+        // Bind the lifecycle owner, camera selector, and use cases
         cameraProvider.bindToLifecycle(
             lifecycleOwner,
             cameraSelector,
@@ -73,6 +111,11 @@ class CameraHelper(private val context: Context) {
         )
     }
 
+    /**
+     * Captures a photo and returns it as a bitmap via the callback function.
+     *
+     * @param callback A lambda function to handle the resulting bitmap.
+     */
     fun takePhotoAsBitmap(callback: (Bitmap?) -> Unit) {
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(createTempFile()).build()
         imageCapture?.takePicture(outputFileOptions, executor, object : ImageCapture.OnImageSavedCallback {
@@ -93,7 +136,11 @@ class CameraHelper(private val context: Context) {
         })
     }
 
-
+    /**
+     * Creates a temporary file for storing captured photos.
+     *
+     * @return A File object representing the temporary file.
+     */
     private fun createTempFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = File(context.getExternalFilesDir(null), "temp")
@@ -102,6 +149,6 @@ class CameraHelper(private val context: Context) {
     }
 
     companion object {
-        private const val TAG = "CameraHelper"
+        private const val TAG = "CameraHelper" // Tag for logging
     }
 }

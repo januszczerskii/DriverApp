@@ -3,37 +3,63 @@ package com.example.driverapp
 import android.graphics.Rect
 import java.util.Arrays
 
-class Result(var classIndex: Int, var score: Float, var rect: Rect, var width: Float, var height: Float, var imgSizeX: Float, var imgSizeY: Float)
-object PrePostProcessor {
-    var noMeanRGB = floatArrayOf(0.0f, 0.0f, 0.0f)
-    var noStdRGB = floatArrayOf(1.0f, 1.0f, 1.0f)
+/**
+ * Represents a detection result, including class index, confidence score,
+ * bounding box, and additional image dimensions.
+ *
+ * @param classIndex The index of the detected class.
+ * @param score The confidence score of the detection.
+ * @param rect The bounding box of the detection.
+ * @param width The normalized width of the bounding box.
+ * @param height The normalized height of the bounding box.
+ * @param imgSizeX The width of the input image.
+ * @param imgSizeY The height of the input image.
+ */
+class Result(
+    var classIndex: Int,
+    var score: Float,
+    var rect: Rect,
+    var width: Float,
+    var height: Float,
+    var imgSizeX: Float,
+    var imgSizeY: Float
+)
 
-    // model input image size
+/**
+ * A utility object for pre-processing and post-processing image data for object detection models.
+ * Includes functionality for Non-Max Suppression (NMS) and Intersection over Union (IoU) calculations.
+ */
+object PrePostProcessor {
+    var noMeanRGB = floatArrayOf(0.0f, 0.0f, 0.0f) // RGB mean normalization values
+    var noStdRGB = floatArrayOf(1.0f, 1.0f, 1.0f) // RGB standard deviation values
+
+    // Model input image size
     var mInputWidth = 640
     var mInputHeight = 640
 
-    private const val mOutputRow = 25200 // as decided by the YOLOv5 model for input image of size 640x640
-    private var mOutputColumn = 6 // left, top, right, bottom, score and 80 class probability
-    private var mThreshold = 0.05f // score above which a detection is generated, change that to arg in setThreshold function later
-    private const val mNmsLimit = 15
-    lateinit var mClasses: Array<String>
-    // The two methods nonMaxSuppression and IOU below are ported from https://github.com/hollance/YOLO-CoreML-MPSNNGraph/blob/master/Common/Helpers.swift
+    private const val mOutputRow = 25200 // Output rows as determined by YOLOv5 for 640x640 input
+    private var mOutputColumn = 6 // Columns include bounding box, score, and class probabilities
+    private var mThreshold = 0.05f // Confidence threshold for detections
+    private const val mNmsLimit = 15 // Maximum number of bounding boxes after NMS
+    lateinit var mClasses: Array<String> // Array of class labels
+
     /**
-     * Removes bounding boxes that overlap too much with other boxes that have
-     * a higher score.
-     * - Parameters:
-     * - boxes: an array of bounding boxes and their scores
-     * - limit: the maximum number of boxes that will be selected
-     * - threshold: used to decide whether boxes overlap too much
+     * Adjusts the detection threshold for accuracy.
+     *
+     * @param higher Whether to increase (true) or decrease (false) the threshold.
      */
-    fun change_accuracy(higher: Boolean){
-        mThreshold = if(higher) 0.9f else 0.05f
+    fun changeAccuracy(higher: Boolean) {
+        mThreshold = if (higher) 0.9f else 0.05f
     }
 
-    private fun nonMaxSuppression(
-        boxes: ArrayList<Result>
-    ): ArrayList<Result> {
-
+    /**
+     * Applies Non-Max Suppression (NMS) to reduce overlapping bounding boxes.
+     *
+     * @param boxes List of detection results to filter.
+     * @return A filtered list of detection results.
+     */
+    private fun nonMaxSuppression(boxes: ArrayList<Result>): ArrayList<Result> {
+        // Sort boxes by score in ascending order
         boxes.sortWith(java.util.Comparator { o1, o2 -> o1.score.compareTo(o2.score) })
         val selected = ArrayList<Result>()
         val active = BooleanArray(boxes.size)
@@ -67,7 +93,11 @@ object PrePostProcessor {
     }
 
     /**
-     * Computes intersection-over-union overlap between two bounding boxes.
+     * Calculates the Intersection-over-Union (IoU) for two bounding boxes.
+     *
+     * @param a The first bounding box.
+     * @param b The second bounding box.
+     * @return The IoU value as a float.
      */
     private fun iou(a: Rect, b: Rect): Float {
         val areaA = ((a.right - a.left) * (a.bottom - a.top)).toFloat()
@@ -83,6 +113,14 @@ object PrePostProcessor {
         return intersectionArea / (areaA + areaB - intersectionArea)
     }
 
+    /**
+     * Converts model outputs to a list of detection results after applying NMS.
+     *
+     * @param outputs The raw output array from the model.
+     * @param imgSizeX The width of the input image.
+     * @param imgSizeY The height of the input image.
+     * @return A filtered list of detection results.
+     */
     fun outputsToNMSPredictions(
         outputs: FloatArray,
         imgSizeX: Float,
@@ -115,6 +153,11 @@ object PrePostProcessor {
         return nonMaxSuppression(results)
     }
 
+    /**
+     * Assigns class labels and updates the output column count.
+     *
+     * @param classes Array of class labels.
+     */
     fun assignClasses(classes: Array<String>) {
         mClasses = classes
         mOutputColumn = mClasses.size + 5

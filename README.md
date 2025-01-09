@@ -26,8 +26,13 @@ DriverApp focuses on:
 ## UI Preview
 
 ### Main Screen
+![driverappmain](https://github.com/user-attachments/assets/6065258a-f6cc-4c4d-8d21-9f0efc6ae218)
+
 ### Main Screen with Active Alerts
+![DRIVERAPP_ALERTS_ON](https://github.com/user-attachments/assets/8d0af1b4-dc83-4b96-963c-007ff2a0b13d)
+
 ### Settings Screen
+![driverappsettings](https://github.com/user-attachments/assets/20be2577-219f-4c49-bc79-1f38910191ff)
 
 ## Contributing
 We welcome contributions to improve DriverApp! Feel free to fork the repository, make changes, and submit a pull request.

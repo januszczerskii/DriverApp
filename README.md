@@ -10,9 +10,7 @@ DriverApp focuses on:
 - **Proximity Alerts**: Recognizes vehicles and pedestrians in proximity to prevent accidents.
 - **Object Identification**: Differentiates between vehicles, pedestrians, and other road features.
 
-## Features
-
-### Core Features
+### Features
 - **Real-Time Analysis**: Provides live feedback using a phone's camera feed.
 - **Customizable Alerts**: Includes adjustable settings for proximity and lane alerts.
 - **On-Device Processing**: Utilizes the YOLOv5s model for local, offline processing of camera feeds.

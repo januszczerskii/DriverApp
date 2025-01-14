@@ -49,7 +49,7 @@ object PrePostProcessor {
      * @param higher Whether to increase (true) or decrease (false) the threshold.
      */
     fun changeAccuracy(higher: Boolean) {
-        mThreshold = if (higher) 0.9f else 0.05f
+        mThreshold = if (higher) 0.9f else 0.5f
     }
 
     /**

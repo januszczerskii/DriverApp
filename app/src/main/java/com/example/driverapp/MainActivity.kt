@@ -299,8 +299,7 @@ class MainActivity : AppCompatActivity() {
      * Resets the location-related settings in the application.
      */
     private fun resetLocation() {
-        RoadGuard.urbanArea = true
-        RoadGuard.allowedSpeed = 50
+        RoadGuard.resetLocation()
     }
 
     /**

@@ -38,6 +38,10 @@ object RoadGuard {
         detectedVehicle = false
     }
 
+    fun resetLocation() {
+        allowedSpeed = if (urbanArea) 50 else allowedSpeed
+    }
+
     /**
      * Processes a single detection result and updates the state variables
      * (e.g., allowed speed, detected objects, and lane status).
